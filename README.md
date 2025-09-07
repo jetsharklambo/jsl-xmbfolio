@@ -24,7 +24,7 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
    cd v3
    ```
 
-3. **Serve locally** (required for blog system to work)
+3. **Serve locally** (required for GitHub API requests)
    ```bash
    # Using Python
    python3 -m http.server 8000
@@ -44,12 +44,16 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 
 ```
 v3/
-├── index.html              # Main entry point
-├── main.js                 # Core navigation & positioning (593 lines)
-├── blog-system.js          # Markdown blog integration (278 lines)
-├── mesh-gradient.js        # WebGL shader backgrounds (291 lines)
-├── style.css              # Responsive styling (394 lines)
-└── blog/                  # Markdown blog posts
+├── index.html                    # Main entry point
+├── main.js                       # Core navigation logic 
+├── blog-system.js                # GitHub API blog integration
+├── mesh-gradient.js              # WebGL shader backgrounds
+├── menu-config.js                # Comprehensive menu positioning config
+├── menu-position-manager.js      # Cross-platform positioning system
+├── menu-control-panel.js         # Debug controls and user interface
+├── menu-debug.js                 # Debug overlay and visualization
+├── style.css                     # Responsive styling
+└── blog/                         # Markdown blog posts (loaded via GitHub API)
     ├── 2024-01-15-welcome.md
     ├── 2024-02-10-development-update.md
     └── 2024-03-05-design-philosophy.md
@@ -70,12 +74,19 @@ v3/
 
 ## 📝 Blog System
 
-The integrated blog system automatically loads Markdown files from the `blog/` folder and displays them in the Log menu section.
+The integrated blog system uses the **GitHub API** to automatically discover and load Markdown files from the repository's `blog/` folder. Blog posts appear dynamically in the Log menu section.
+
+### How It Works
+
+1. **Automatic Discovery**: The system fetches all `.md` files from the GitHub repository
+2. **GitHub API Integration**: Uses `https://api.github.com/repos/jetsharklambo/xmbfolio/contents/blog`
+3. **Dynamic Loading**: Blog posts are loaded and parsed automatically on page load
+4. **GitHub Links**: Clicking a blog post opens the GitHub page with an anchor to the first heading
 
 ### Creating Blog Posts
 
-1. Create a new `.md` file in the `blog/` folder
-2. Add frontmatter with required fields:
+1. **Create a new `.md` file** in the `blog/` folder
+2. **Add frontmatter** with required fields:
 
 ```markdown
 ---
@@ -89,21 +100,25 @@ excerpt: "Brief description of your post"
 Write your blog content in Markdown format...
 ```
 
-3. Add the filename to `blog-system.js` in the `blogFiles` array:
-
-```javascript
-this.blogFiles = [
-    '2024-01-15-welcome.md',
-    'your-new-post.md'  // Add your file here
-];
-```
+3. **Commit to GitHub** - The post will automatically appear in the menu (no code changes needed!)
 
 ### Blog Features
 
-- **Markdown Support**: Full markdown rendering with syntax highlighting
-- **Modal Viewer**: Full-screen blog post reader with PS3 styling
-- **Frontmatter Parsing**: Automatic title, date, and excerpt extraction
-- **Responsive Design**: Optimized reading experience on all devices
+- **GitHub API Integration**: Automatic discovery of new blog posts
+- **Smart Link Generation**: Links to GitHub with anchors to first headings
+- **Frontmatter Parsing**: Automatic title, date, and excerpt extraction  
+- **Zero Configuration**: No manual file registration required
+- **GitHub Rendering**: Posts display with GitHub's native Markdown renderer
+
+### GitHub Configuration
+
+The blog system is configured to work with this repository by default. To use with your own repository:
+
+```javascript
+// In blog-system.js, update these values:
+this.githubRepo = 'yourusername/yourrepository';
+this.githubPath = 'blog'; // or your preferred folder name
+```
 
 ## 🎨 Customization
 
@@ -168,28 +183,32 @@ let horizontalOffset = isMobileDevice ? 0 : 0;
 ### Core Technologies
 - **Vanilla JavaScript** - No external dependencies
 - **WebGL/WebGL2** - Hardware-accelerated background rendering
+- **GitHub API** - Dynamic blog post loading
 - **CSS3 Transforms** - Smooth menu animations
-- **Markdown Parsing** - Custom lightweight parser
+- **Frontmatter Parsing** - Custom YAML-like parser
 - **Responsive CSS** - Mobile-first design approach
 
 ### Performance Features
 - **Hardware Acceleration** - WebGL rendering for smooth animations
-- **Optimized Positioning** - Single source of truth for menu positioning
-- **Efficient Rendering** - Minimal DOM manipulation
-- **Mobile Optimization** - Reduced visual effects on mobile devices
+- **Comprehensive Positioning System** - Platform-specific configurations with debug controls
+- **Efficient API Usage** - Cached GitHub requests with smart loading
+- **Mobile Optimization** - Touch-optimized interface with floating debug controls
+- **Cross-Browser Compatibility** - Browser-specific positioning adjustments
 
-### Browser-Specific Features
-- **Safari Mobile** - Custom positioning calculations for proper display
-- **Touch Events** - Native touch gesture support
-- **Viewport Detection** - Responsive behavior based on screen size
-- **WebGL Fallbacks** - Graceful degradation for unsupported browsers
+### Advanced Features
+- **Debug Control Panel** - Real-time menu positioning with visual feedback
+- **Environment Detection** - Automatic device, browser, and viewport detection
+- **User Preferences** - LocalStorage persistence for custom positioning
+- **Touch Gesture Support** - Native touch events with conflict resolution
+- **GitHub Link Anchors** - Smart heading detection for direct navigation
 
 ## 📋 Development Notes
 
-- Menu positioning uses a unified JavaScript system to prevent conflicts
-- Blog system initializes after main navigation to ensure proper integration
-- WebGL backgrounds use dual-layer rendering for visual depth
-- CSS animations are minimized on mobile for performance
+- **Positioning System**: Comprehensive cross-platform menu positioning with debug controls
+- **GitHub Integration**: Blog system fetches posts dynamically via GitHub API
+- **WebGL Backgrounds**: Dual-layer mesh gradient rendering for visual depth
+- **Mobile Optimization**: Touch-first design with floating debug controls
+- **Browser Detection**: Automatic environment detection with platform-specific configurations
 
 ## 🎯 Version History
 

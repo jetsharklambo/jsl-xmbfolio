@@ -14,7 +14,7 @@ const NO_SUB_MENU_ITEM_COUNT = -1;
 
 let isTransitioningHorizontally = false;
 let isTransitioningVertically = false;
-let activeMenuItemIndex = 0;
+let activeMenuItemIndex = 1;
 const menuItemsData = [];
 
 /**
@@ -87,11 +87,23 @@ function addEventListeners() {
     let touchStartY = 0;
     
     document.addEventListener('touchstart', (e) => {
+        // Check if touch is on floating settings button
+        const target = e.target.closest('.floating-settings-btn');
+        if (target) {
+            return; // Let the button handle its own touch events
+        }
+        
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
     });
 
     document.addEventListener('touchend', async (e) => {
+        // Check if touch is on floating settings button
+        const target = e.target.closest('.floating-settings-btn');
+        if (target) {
+            return; // Let the button handle its own touch events
+        }
+        
         if (!touchStartX || !touchStartY) return;
 
         const touchEndX = e.changedTouches[0].clientX;
@@ -190,8 +202,14 @@ function addSubMenuMouseListeners() {
         const subMenuItems = subMenuItemContainer.querySelectorAll('.sub-menu-item');
         
         subMenuItems.forEach((subMenuItem, subIndex) => {
+            // Skip blog items entirely - they have their own handlers
+            if (subMenuItem.hasAttribute('data-blog-index')) {
+                return; // Let blog system handle this completely
+            }
+            
             // Click to navigate to sub-menu item
             subMenuItem.addEventListener('click', async (e) => {
+                
                 e.preventDefault();
                 e.stopPropagation();
                 
@@ -208,6 +226,9 @@ function addSubMenuMouseListeners() {
                         for (let i = 0; i < steps; i++) {
                             await moveSubMenuItemsVertically(direction);
                         }
+                    } else {
+                        // Item is already selected, perform action
+                        performSubMenuAction(subMenuItem);
                     }
                 }
             });
@@ -261,8 +282,9 @@ async function moveMenuItemsHorizontally(direction) {
     // Get all menu items
     const menuItems = document.querySelectorAll('.menu-item');
 
-    // Apply mobile-friendly movement amount
-    const moveAmount = isMobile() ? 120 : HORIZONTAL_MOVEMENT_AMOUNT;
+    // Get movement amount from position manager
+    const navigationAmounts = menuPositionManager.getNavigationAmounts();
+    const moveAmount = navigationAmounts.horizontal;
 
     menuItems.forEach((menuItem) => {
         const currentTranslateX = getTranslateX(menuItem);
@@ -306,7 +328,8 @@ async function moveSubMenuItemsVertically(direction) {
 
     // Get selected menu item's children (sub menu items)
     const subMenuItems = Array.from(activeMenuItem.subMenuItemContainer.children);
-    const moveAmount = isMobile() ? 100 : VERTICAL_MOVEMENT_AMOUNT;
+    const navigationAmounts = menuPositionManager.getNavigationAmounts();
+    const moveAmount = navigationAmounts.vertical;
     const offsetAmount = isMobile() ? 200 : VERTICAL_MOVEMENT_OFFSET;
     
     subMenuItems.forEach((selectionItem, index) => {
@@ -406,6 +429,42 @@ function getActiveMenuItem() {
 }
 
 /**
+ * Perform action when sub-menu item is clicked while already selected
+ */
+function performSubMenuAction(subMenuItem) {
+    const itemText = subMenuItem.querySelector('.sub-menu-item-header').textContent.trim();
+    
+    switch (itemText) {
+        case 'Email':
+            window.open('mailto:your.email@example.com', '_self');
+            break;
+        case 'LinkedIn':
+            window.open('https://linkedin.com/in/yourprofile', '_blank');
+            break;
+        case 'GitHub':
+            window.open('https://github.com/jetsharklambo', '_blank');
+            break;
+        case 'Saltfree':
+            window.open('http://saltfree.vercel.app/', '_blank');
+            break;
+        case 'XMBFolio':
+            window.open('https://github.com/jetsharklambo/xmbfolio', '_blank');
+            break;
+        case 'Bio':
+            window.open('https://maximo.is/', '_blank');
+            break;
+        case 'Activity':
+            alert('Activity log coming soon!');
+            break;
+        case 'Archive':
+            alert('Archive section coming soon!');
+            break;
+        default:
+            console.log(`No action defined for: ${itemText}`);
+    }
+}
+
+/**
  * Wait for all transitions to complete
  */
 function waitForAllTransitions(elements) {
@@ -436,8 +495,23 @@ function waitForAllTransitions(elements) {
  * Setup active menu item at startup
  */
 function setupActiveMenuItem() {
-    const activeMenuItem = document.querySelector('.menu-item');
-    activeMenuItem.classList.add('active-menu-item');
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems[activeMenuItemIndex].classList.add('active-menu-item');
+}
+
+/**
+ * Apply horizontal offset for mobile menu positioning
+ */
+function applyMobileMenuOffset() {
+    if (window.innerWidth <= 768) {
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach((menuItem) => {
+            const currentTransform = getTranslateX(menuItem);
+            // Move menu 100px to the right (positive value moves right)
+            menuItem.style.transform = `translateX(${currentTransform + 100}px)`;
+        });
+        console.log('Applied mobile menu offset: +100px');
+    }
 }
 
 /**
@@ -462,56 +536,28 @@ buildMenuItemsData();
 addEventListeners();
 setupActiveMenuItem();
 setupActiveSubMenuItems();
+applyMobileMenuOffset();
 
-// Comprehensive menu positioning - single source of truth
-function positionMenu() {
-    const menuContainer = document.querySelector('.menu-container');
-    if (!menuContainer) return;
+// Initialize comprehensive menu positioning system
+let menuPositionManager;
+let menuControlPanel;
+
+function initializeMenuPositioning() {
+    // Create position manager
+    menuPositionManager = new MenuPositionManager();
     
-    // Calculate responsive positioning
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    // Create control panel (hidden by default)
+    menuControlPanel = new MenuControlPanel(menuPositionManager);
     
-    // Vertical positioning (browser-specific)
-    const safariTopPercent = 0.35; // 35% from top for Safari
-    const otherTopPercent = 0.45;  // 45% from top for others
-    const topPosition = isSafari() ? 
-        viewportHeight * safariTopPercent : 
-        viewportHeight * otherTopPercent;
+    // Make globally accessible for control panel
+    window.menuPositionManager = menuPositionManager;
+    window.menuControlPanel = menuControlPanel;
     
-    // Horizontal positioning (responsive)
-    const isMobileDevice = viewportWidth <= 768;
-    let rightPercent = isMobileDevice ? 0.0 : 0.25; // Mobile: right edge, Desktop: more centered
-    let horizontalOffset = isMobileDevice ? 0 : 0; // No additional offset needed
-    
-    // Safari-specific horizontal adjustment (keeping same as all mobile now)
-    if (isSafari()) {
-        rightPercent = isMobileDevice ? 0.0 : 0.25; // Same as other browsers now
-        horizontalOffset = isMobileDevice ? 0 : 0; // Same as other browsers now
-    }
-    
-    const rightPosition = viewportWidth * rightPercent;
-    
-    // Apply complete positioning
-    menuContainer.style.position = 'fixed';
-    menuContainer.style.top = `${topPosition}px`;
-    menuContainer.style.right = `${rightPosition + horizontalOffset}px`;
-    menuContainer.style.zIndex = '9999';
-    
-    console.log(`Menu positioned: top=${topPosition}px, right=${rightPosition + horizontalOffset}px`);
+    console.log('Menu positioning system initialized');
 }
 
-// Set up responsive positioning
-positionMenu();
-
-// Handle window resize for responsive positioning
-window.addEventListener('resize', () => {
-    // Debounce resize events
-    clearTimeout(window.menuPositionTimeout);
-    window.menuPositionTimeout = setTimeout(() => {
-        positionMenu();
-    }, 100);
-});
+// Initialize positioning system
+initializeMenuPositioning();
 
 // Initialize background gradients
 function initializeBackground() {
@@ -574,8 +620,10 @@ function initializeBlogSystem() {
             buildMenuItemsData();
             // Reset active sub-menu items for all menu items
             setupActiveSubMenuItems();
-            // Reattach mouse listeners for new blog sub-menu items
-            addSubMenuMouseListeners();
+            // Apply mobile menu offset after rebuild
+            applyMobileMenuOffset();
+            // Reattach ALL mouse listeners (main menu and sub-menu items)
+            addMouseEventListeners();
         }).catch(error => {
             console.error('Failed to initialize blog system:', error);
         });

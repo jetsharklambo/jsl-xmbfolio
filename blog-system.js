@@ -7,14 +7,11 @@ class BlogSystem {
     constructor() {
         this.posts = [];
         this.currentPost = null;
-        this.blogFolder = 'blog/';
         
-        // List of known blog post files (since we can't dynamically list files in browser)
-        this.blogFiles = [
-            '2024-01-15-welcome.md',
-            '2024-02-10-development-update.md', 
-            '2024-03-05-design-philosophy.md'
-        ];
+        // GitHub configuration for loading blog posts
+        this.githubRepo = 'jetsharklambo/xmbfolio';
+        this.githubPath = 'blog';
+        this.githubApiUrl = `https://api.github.com/repos/${this.githubRepo}/contents/${this.githubPath}`;
     }
 
     async initialize() {
@@ -31,45 +28,68 @@ class BlogSystem {
     }
 
     async loadAllPosts() {
-        console.log('Attempting to load blog posts...');
-        const promises = this.blogFiles.map(filename => this.loadPost(filename));
-        const results = await Promise.allSettled(promises);
+        console.log('Loading blog posts from GitHub...');
         
-        this.posts = results
-            .filter(result => result.status === 'fulfilled' && result.value !== null)
-            .map(result => result.value)
-            .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, newest first
-        
-        console.log(`Loaded ${this.posts.length} blog posts successfully`);
+        try {
+            // Fetch list of files from GitHub API
+            const response = await fetch(this.githubApiUrl);
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+            }
+            
+            const files = await response.json();
+            console.log(`Found ${files.length} files in GitHub repo`);
+            
+            // Filter for markdown files
+            const markdownFiles = files.filter(file => 
+                file.type === 'file' && 
+                (file.name.endsWith('.md') || file.name.endsWith('.markdown'))
+            );
+            
+            console.log(`Found ${markdownFiles.length} markdown files`);
+            
+            // Load each markdown file
+            const promises = markdownFiles.map(file => this.loadPost(file));
+            const results = await Promise.allSettled(promises);
+            
+            this.posts = results
+                .filter(result => result.status === 'fulfilled' && result.value !== null)
+                .map(result => result.value)
+                .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, newest first
+            
+            console.log(`Successfully loaded ${this.posts.length} blog posts from GitHub`);
+            
+        } catch (error) {
+            console.error('Failed to load posts from GitHub:', error);
+            this.posts = [];
+        }
     }
 
-    async loadPost(filename) {
+    async loadPost(fileData) {
         try {
-            console.log(`Attempting to load: ${this.blogFolder}${filename}`);
-            const response = await fetch(`${this.blogFolder}${filename}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            });
+            console.log(`Loading blog post: ${fileData.name}`);
+            
+            // Fetch the raw file content from GitHub
+            const response = await fetch(fileData.download_url);
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(`Failed to fetch ${fileData.name}: ${response.status} ${response.statusText}`);
             }
             
             const content = await response.text();
             const { frontmatter, body } = this.parseFrontmatter(content);
             
-            console.log(`Successfully loaded: ${filename}`);
+            console.log(`Successfully loaded: ${fileData.name}`);
             return {
-                filename,
+                filename: fileData.name,
                 title: frontmatter.title || 'Untitled Post',
                 date: frontmatter.date || '2024-01-01',
                 excerpt: frontmatter.excerpt || '',
-                content: body
+                content: body,
+                githubUrl: fileData.html_url // Store GitHub URL for reference
             };
         } catch (error) {
-            console.error(`Failed to load ${filename}:`, error.message);
+            console.error(`Failed to load ${fileData.name}:`, error.message);
             return null;
         }
     }
@@ -136,6 +156,7 @@ class BlogSystem {
     }
 
     createBlogSubMenuItem(post, index) {
+        console.log(`Creating blog sub-menu item: ${post.title} with index ${index}`);
         const subMenuItem = document.createElement('div');
         subMenuItem.className = 'sub-menu-item';
         subMenuItem.dataset.blogIndex = index;
@@ -146,19 +167,33 @@ class BlogSystem {
             </svg>
             <div class="sub-menu-item-header">${post.title}</div>
         `;
-
+        
+        console.log('Created blog item with data-blog-index:', subMenuItem.dataset.blogIndex);
         return subMenuItem;
     }
 
     setupEventListeners() {
-        // Listen for clicks on blog sub-menu items
-        document.addEventListener('click', (e) => {
+        console.log('Setting up blog event listeners...');
+        
+        // Remove existing blog click listener if it exists
+        if (this.blogClickHandler) {
+            document.removeEventListener('click', this.blogClickHandler, true);
+        }
+        
+        // Create new blog click handler with higher priority
+        this.blogClickHandler = (e) => {
             const subMenuItem = e.target.closest('.sub-menu-item[data-blog-index]');
             if (subMenuItem) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Blog click detected! Opening:', subMenuItem.querySelector('.sub-menu-item-header').textContent);
                 const blogIndex = parseInt(subMenuItem.dataset.blogIndex);
-                this.openBlogPost(blogIndex);
+                this.openBlogLink(blogIndex);
             }
-        });
+        };
+        
+        // Listen for clicks on blog sub-menu items with capture priority
+        document.addEventListener('click', this.blogClickHandler, true);
 
         // Listen for modal close events
         document.addEventListener('click', (e) => {
@@ -173,6 +208,23 @@ class BlogSystem {
                 this.closeBlogPost();
             }
         });
+    }
+
+    openBlogLink(index) {
+        if (index < 0 || index >= this.posts.length) {
+            console.error('Invalid blog post index:', index);
+            return;
+        }
+
+        const post = this.posts[index];
+        console.log(`Opening blog post: ${post.title} at ${post.githubUrl}`);
+        
+        // Extract first heading from markdown content and generate anchor
+        const firstHeadingAnchor = this.extractFirstHeadingAnchor(post.content);
+        const urlWithAnchor = firstHeadingAnchor ? `${post.githubUrl}${firstHeadingAnchor}` : post.githubUrl;
+        
+        // Open the GitHub markdown file in a new tab with anchor to first heading
+        window.open(urlWithAnchor, '_blank');
     }
 
     openBlogPost(index) {
@@ -267,6 +319,28 @@ class BlogSystem {
             .replace(/<p><\/p>/g, '')
             .replace(/<p>(<h[1-6]>)/g, '$1')
             .replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+    }
+
+    extractFirstHeadingAnchor(markdownContent) {
+        // Find the first heading (# or ## or ###) in the markdown content
+        const headingRegex = /^#+\s+(.+)$/m;
+        const match = markdownContent.match(headingRegex);
+        
+        if (!match) {
+            return null;
+        }
+        
+        const headingText = match[1];
+        
+        // Generate GitHub-style anchor slug
+        // Convert to lowercase, replace spaces with hyphens, preserve multiple hyphens
+        const anchor = headingText
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+        
+        return `#${anchor}`;
     }
 
     setupFallbackMenu() {
