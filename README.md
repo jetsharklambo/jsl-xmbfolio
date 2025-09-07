@@ -216,6 +216,17 @@ let horizontalOffset = isMobileDevice ? 0 : 0;
 - **v2** - Simplified XMB implementation with gradient backgrounds  
 - **v1** - Initial XMB recreation with basic navigation
 
+## 🙏 Credits & Acknowledgments
+
+This project builds upon the excellent work of:
+
+- **Menu System**: Inspired by and adapted from [ps3-xmb-menu](https://github.com/mustafaHTP/ps3-xmb-menu) by [mustafaHTP](https://github.com/mustafaHTP)
+- **WebGL Background**: Based on mesh gradient shaders from [Paper Design Shaders](https://github.com/paper-design/shaders)
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
 ---
 
 **Created with ❤️ as a tribute to the iconic PlayStation 3 XrossMediaBar interface**

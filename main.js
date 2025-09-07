@@ -435,14 +435,14 @@ function performSubMenuAction(subMenuItem) {
     const itemText = subMenuItem.querySelector('.sub-menu-item-header').textContent.trim();
     
     switch (itemText) {
-        case 'Email':
-            window.open('mailto:your.email@example.com', '_self');
-            break;
-        case 'LinkedIn':
-            window.open('https://linkedin.com/in/yourprofile', '_blank');
-            break;
         case 'GitHub':
             window.open('https://github.com/jetsharklambo', '_blank');
+            break;
+        case 'Farcaster':
+            window.open('https://farcaster.xyz/jetsharklambo', '_blank');
+            break;
+        case 'Twitter':
+            window.open('https://x.com/0xJetsharkLambo', '_blank');
             break;
         case 'Saltfree':
             window.open('http://saltfree.vercel.app/', '_blank');
