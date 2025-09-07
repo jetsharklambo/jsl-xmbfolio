@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>XMB Portfolio</title>
+    </head>
+    <body>
+        <!-- Background Gradients -->
+        <canvas id="background-primary" class="background-layer primary"></canvas>
+        <canvas id="background-wireframe" class="background-layer wireframe"></canvas>
+
+        <div class="main-container">
+            <div class="menu-container">
+                <!-- Contact Menu Item -->
+                <div class="menu-item">
+                    <div class="menu-item-header">
+                        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <div class="menu-item-description">Contact</div>
+                    </div>
+                    <div class="sub-menu-item-container">
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            <div class="sub-menu-item-header">Email</div>
+                        </div>
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                            </svg>
+                            <div class="sub-menu-item-header">LinkedIn</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects Menu Item -->
+                <div class="menu-item">
+                    <div class="menu-item-header">
+                        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                        </svg>
+                        <div class="menu-item-description">Projects</div>
+                    </div>
+                    <div class="sub-menu-item-container">
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Web Apps</div>
+                        </div>
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21C5,22.11 5.89,23 7,23H17C18.11,23 19,22.11 19,21V3C19,1.89 18.11,1 17,1Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Mobile Apps</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- About Menu Item -->
+                <div class="menu-item">
+                    <div class="menu-item-header">
+                        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,17C12.56,17 13,16.56 13,16V12C13,11.44 12.56,11 12,11C11.44,11 11,11.44 11,12V16C11,16.56 11.44,17 12,17M12,9A1,1 0 0,0 13,8A1,1 0 0,0 12,7A1,1 0 0,0 11,8A1,1 0 0,0 12,9Z" />
+                        </svg>
+                        <div class="menu-item-description">About</div>
+                    </div>
+                    <div class="sub-menu-item-container">
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Bio</div>
+                        </div>
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V10.5A1,1 0 0,0 4,11.5H16A1,1 0 0,0 17,10.5M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Skills</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Log Menu Item -->
+                <div class="menu-item">
+                    <div class="menu-item-header">
+                        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z" />
+                        </svg>
+                        <div class="menu-item-description">Log</div>
+                    </div>
+                    <div class="sub-menu-item-container">
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,12H7.5L9.5,14L8,15.5L4.5,12L8,8.5L9.5,10L7.5,12H14V12M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Activity</div>
+                        </div>
+                        <div class="sub-menu-item">
+                            <svg class="sub-menu-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10L12,6H19A2,2 0 0,1 21,8H21L4,8V18L6.14,10H23.21L20.93,18.5C20.7,19.37 19.92,20 19,20Z" />
+                            </svg>
+                            <div class="sub-menu-item-header">Archive</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="mesh-gradient.js"></script>
+        <script src="blog-system.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
