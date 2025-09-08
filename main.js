@@ -14,7 +14,7 @@ const NO_SUB_MENU_ITEM_COUNT = -1;
 
 let isTransitioningHorizontally = false;
 let isTransitioningVertically = false;
-let activeMenuItemIndex = 1;
+let activeMenuItemIndex = 0;
 const menuItemsData = [];
 
 /**
@@ -403,6 +403,11 @@ function updateStyleActiveMenuItem() {
 
     // Add active class to the active menu item
     menuItems[activeMenuItemIndex].classList.add('active-menu-item');
+    
+    // Notify animation system of menu change
+    if (window.menuAnimations) {
+        window.menuAnimations.updateActiveItem();
+    }
 }
 
 function updateActiveSubMenuItemStyle() {
