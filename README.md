@@ -2,7 +2,7 @@
 
 > 🎮 This is JSL's personal implementation of [XMBFolio](https://github.com/jetsharklambo/xmbfolio). For the customizable template that you can fork and make your own, please visit the main XMBFolio repository.
 
-A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaBar (XMB) interface. Built with modern web technologies including WebGL shaders, responsive design, and an integrated blog system.
+A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaBar (XMB) interface. Built with modern web technologies including WebGL shaders, responsive design, smooth animations, and an integrated blog system.
 
 ## ✨ Features
 
@@ -12,6 +12,8 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 - **📱 Cross-Platform Responsive** - Optimized for desktop, mobile, and tablet with touch support
 - **⌨️ Multiple Input Methods** - Keyboard arrows, touch gestures, and mouse navigation
 - **🎨 Modern PS3 Aesthetic** - Black background with green accent theming
+- **✨ Interactive Animations** - Physics-based animations with Motion library for engaging UX
+- **👁️ Smart Focus System** - @ menu active by default with subtle pulse animations on inactive items
 
 ## 🚀 Quick Start
 
@@ -48,6 +50,7 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 v3/
 ├── index.html                    # Main entry point
 ├── main.js                       # Core navigation logic 
+├── menu-animations.js            # Motion-powered animation system
 ├── blog-system.js                # GitHub API blog integration
 ├── mesh-gradient.js              # WebGL shader backgrounds
 ├── menu-config.js                # Comprehensive menu positioning config
@@ -187,6 +190,7 @@ let horizontalOffset = isMobileDevice ? 0 : 0;
 - **WebGL/WebGL2** - Hardware-accelerated background rendering
 - **GitHub API** - Dynamic blog post loading
 - **CSS3 Transforms** - Smooth menu animations
+- **Motion Library** - High-performance animation library for smooth interactions
 - **Frontmatter Parsing** - Custom YAML-like parser
 - **Responsive CSS** - Mobile-first design approach
 
@@ -212,6 +216,14 @@ let horizontalOffset = isMobileDevice ? 0 : 0;
 - **Mobile Optimization**: Touch-first design with floating debug controls
 - **Browser Detection**: Automatic environment detection with platform-specific configurations
 
+## 🆕 Latest Updates
+
+- **Contact-First Experience**: @ menu now active by default for immediate contact visibility
+- **Engagement Animations**: Inactive menu items pulse subtly to encourage exploration
+- **Hover Effects**: Interactive scaling and rotation animations on menu hover
+- **Physics-Based Motion**: Spring animations for natural, responsive interactions
+- **Smart Animation System**: Automatic updates when navigating between menu sections
+
 ## 🎯 Version History
 
 - **v3** (Current) - Full-featured XMB with blog system and WebGL backgrounds
@@ -224,6 +236,7 @@ This project builds upon the excellent work of:
 
 - **Menu System**: Inspired by and adapted from [ps3-xmb-menu](https://github.com/mustafaHTP/ps3-xmb-menu) by [mustafaHTP](https://github.com/mustafaHTP)
 - **WebGL Background**: Based on mesh gradient shaders from [Paper Design Shaders](https://github.com/paper-design/shaders)
+- **Animation Library**: [Motion](https://github.com/motiondivision/motion) - Modern animation library for JavaScript
 
 ## 📄 License
 
