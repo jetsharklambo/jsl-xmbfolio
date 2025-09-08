@@ -1,5 +1,7 @@
 # XMBFolio 🎮
 
+> 🎮 This is JSL's personal implementation of [XMBFolio](https://github.com/jetsharklambo/xmbfolio). For the customizable template that you can fork and make your own, please visit the main XMBFolio repository.
+
 A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaBar (XMB) interface. Built with modern web technologies including WebGL shaders, responsive design, and an integrated blog system.
 
 ## ✨ Features
@@ -15,7 +17,7 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/XMBFolio.git
+   git clone https://github.com/jetsharklambo/jsl-xmbfolio.git
    cd XMBFolio
    ```
 

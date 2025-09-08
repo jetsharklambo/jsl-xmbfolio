@@ -9,7 +9,7 @@ class BlogSystem {
         this.currentPost = null;
         
         // GitHub configuration for loading blog posts
-        this.githubRepo = 'jetsharklambo/xmbfolio';
+        this.githubRepo = 'jetsharklambo/jsl-xmbfolio';
         this.githubPath = 'blog';
         this.githubApiUrl = `https://api.github.com/repos/${this.githubRepo}/contents/${this.githubPath}`;
     }
