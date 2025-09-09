@@ -56,7 +56,7 @@ const MenuConfig = {
         },
         desktop: {
             safari: { 
-                top: '35%', 
+                top: '45%', 
                 right: '25%', 
                 scale: 1.0,
                 horizontalMove: 170,
