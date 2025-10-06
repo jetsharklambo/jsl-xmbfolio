@@ -1,6 +1,6 @@
 ---
 title: "The Start of My VibeCode Journey"
-date: "2024-12-01"
+date: "2025-06-19"
 excerpt: "From Fortune 500 L&D leader to creative technologist - exploring the intersection of education, AI, and Web3"
 ---
 
