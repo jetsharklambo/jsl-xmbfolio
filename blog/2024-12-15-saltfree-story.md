@@ -1,6 +1,6 @@
 ---
 title: "From Poker Night to Blockchain"
-date: "2024-12-15"
+date: "2025-07-13"
 excerpt: "How organizing poker nights led to building a Web3 platform that solves trust issues in competitive games"
 ---
 
