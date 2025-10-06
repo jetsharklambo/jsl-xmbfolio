@@ -71,14 +71,18 @@ function addEventListeners() {
         else if (event.key === 'ArrowRight') {
             direction = DIRECTION.Right;
             await moveMenuItemsHorizontally(direction);
-        } 
+        }
         else if (event.key === 'ArrowUp') {
             direction = DIRECTION.Up;
             await moveSubMenuItemsVertically(direction);
-        } 
+        }
         else if (event.key === 'ArrowDown') {
             direction = DIRECTION.Down;
             await moveSubMenuItemsVertically(direction);
+        }
+        else if (event.key === ' ' || event.key === 'Enter') {
+            event.preventDefault(); // Prevent page scroll on spacebar
+            triggerActiveSubMenuItem();
         }
     });
 
@@ -438,7 +442,7 @@ function getActiveMenuItem() {
  */
 function performSubMenuAction(subMenuItem) {
     const itemText = subMenuItem.querySelector('.sub-menu-item-header').textContent.trim();
-    
+
     switch (itemText) {
         case 'GitHub':
             window.open('https://github.com/jetsharklambo', '_blank');
@@ -466,6 +470,32 @@ function performSubMenuAction(subMenuItem) {
             break;
         default:
             console.log(`No action defined for: ${itemText}`);
+    }
+}
+
+/**
+ * Trigger action on currently active sub-menu item (for keyboard shortcuts)
+ */
+function triggerActiveSubMenuItem() {
+    const activeMenuItem = getActiveMenuItem();
+
+    // Check if there are sub-menu items
+    if (activeMenuItem.subMenuItemCount === NO_SUB_MENU_ITEM_COUNT) {
+        console.log('No sub-menu items to trigger');
+        return;
+    }
+
+    // Get the active sub-menu item element
+    const subMenuItems = Array.from(activeMenuItem.subMenuItemContainer.children);
+    const activeSubMenuItem = subMenuItems[activeMenuItem.activeSubMenuItemIndex];
+
+    // Check if this is a blog item
+    if (activeSubMenuItem.hasAttribute('data-blog-index')) {
+        const blogIndex = parseInt(activeSubMenuItem.dataset.blogIndex);
+        window.blogSystem.openBlogLink(blogIndex);
+    } else {
+        // Regular sub-menu item
+        performSubMenuAction(activeSubMenuItem);
     }
 }
 
