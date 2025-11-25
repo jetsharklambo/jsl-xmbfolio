@@ -1,39 +1,25 @@
 ---
-title: "The Start of My VibeCode Journey"
+title: "Dipping a Toe In"
 date: "2025-06-19"
-excerpt: "From Fortune 500 L&D leader to creative technologist - exploring the intersection of education, AI, and Web3"
+excerpt: "Dipping a Toe In"
 ---
 
-# The Start of My VibeCode Journey
+# The Tinkering to Coding Pipeline
 
-After years as a Learning and Development Leader at Fortune 500 companies, designing technology training for teams at Pandora, Facebook, Instagram, WhatsApp, and SiriusXM, I've discovered something exciting: the tools I used to teach others about technology have evolved into creative partners themselves.
-
-## From Educator to Creator
-
-My background as a Digital Education Producer and Event Operations Director taught me to bridge complex technological concepts with human understanding. I've spent my career creating workshops on emerging technologies, building accessibility training for technologists, and curating learning experiences that make the impossible feel approachable.
-
-Now, I'm applying that same philosophy to my own creative journey—but this time, I'm not just teaching about technology. I'm **vibecoding** with it.
+I'm a tinkerer. I build stuff, take it apart, and build up again. I do this to learn how things work, tailor them to my specific uses, and to repurpose components that I no longer need. For YEARS, I've been a hardware tinkerer that drew a rigid line in the sand at the firmware/OS level. I love making handheld electronics...as long as someone has figured out the software. I can 3D print, CNC, plot, and widdle ALL DAY. But aside from editing some HTML for myspace, I was not one to tinker in the software space. I can't tell you how many projects I have happily cast aside when I reached a hurdle I did not have the coding skills to overcome. These would become opportunities to collab with folks who did have the skills or a welcome excuse to drop that project and pick up the next shiny new thing.
 
 ## The VibeCode Toolkit
 
+Recently, I began using new tools to help me address some of my own lack of coding skills.
+
 **[Claude Code](https://claude.ai/code)** has become my AI development partner, helping me build full-stack applications that would have taken months to prototype. Instead of wrestling with documentation, I'm having conversations about architecture and watching ideas come to life in real-time.
 
-**[Midjourney](https://midjourney.com)** transforms my visual concepts into stunning art through the power of prompts. The same skills I used to craft clear training materials now help me communicate with AI to create images that capture the essence of ideas I couldn't draw myself.
+**[Perplexity](http://perplexity.ai)** is my day to day AI assistant for most technical tasks. Critically, this service helps be build Product Requirements Docs for any plugin, add-ons, sites, and apps I've been working on. This is where the wrestling with documentation happens.
 
-**[Thirdweb](https://thirdweb.com)** simplifies Web3 development, making smart contract deployment and blockchain integration as straightforward as traditional web development. No more drowning in Web3 complexity—just pure creative expression.
+## Coding Layups
 
-**[OpenZeppelin](https://openzeppelin.com)** provides the security foundation every blockchain project needs. Their audited smart contract libraries mean I can focus on innovation without compromising on safety.
+My hobby of picking up small e-ink devices has presented me with tons of opportunity to develop. I'll save you my e-ink manifesto and just let you know there are many huge open source community around a wide variety of screens and input devices. For some reason, e-ink gets the open source people going. Here are some devices I own that I'm going to create some software for:
 
-## Beyond Traditional Development
-
-This isn't just about learning new tools—it's about reimagining what's possible when education expertise meets creative technology. I'm building experiences that span Web2 and Web3, creating art that bridges digital and physical worlds, and developing applications that solve real problems for real communities.
-
-The same curiosity that drove me to design learning experiences for emerging technologies now fuels my exploration of AI-assisted development, prompt engineering, and decentralized applications. Every project becomes a laboratory for discovering new ways humans and AI can collaborate.
-
-## What's Next
-
-This portfolio represents more than just projects—it's a living document of the VibeCode philosophy. Where traditional development meets AI assistance. Where visual imagination meets generative art. Where community problems meet blockchain solutions.
-
-The journey from Oakland-based learning strategist to creative technologist is just beginning. The tools are ready. The community is building. The vibe is immaculate.
-
-Let's create something extraordinary together.
+[Pebble Watch](https://repebble.com/) - e-ink smart watch that was just reborn!
+[TRMNL](www.usetrmnl.com) - tablet sized e-ink smart display
+[Playdate](www.play.date) - handheld e-ink game console
