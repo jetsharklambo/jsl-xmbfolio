@@ -20,6 +20,6 @@ Recently, I began using new tools to help me address some of my own lack of codi
 
 My hobby of picking up small e-ink devices has presented me with tons of opportunity to develop. I'll save you my e-ink manifesto and just let you know there are many huge open source community around a wide variety of screens and input devices. For some reason, e-ink gets the open source people going. Here are some devices I own that I'm going to create some software for:
 
-[Pebble Watch](https://repebble.com/) - e-ink smart watch that was just reborn!
-[TRMNL](www.usetrmnl.com) - tablet sized e-ink smart display
-[Playdate](www.play.date) - handheld e-ink game console
+ **[Pebble Watch](https://repebble.com/)** - e-ink smart watch that was just reborn!
+**[TRMNL](www.usetrmnl.com)** - tablet sized e-ink smart display
+**[Playdate](www.play.date)** - handheld e-ink game console
