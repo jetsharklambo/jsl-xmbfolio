@@ -1,6 +1,6 @@
 ---
 title: "Living Above the Station: BARTstop"
-date: "2024-06-20"
+date: "2025-11-07"
 excerpt: "Developing train anticipation and station rhythm when you live near transit"
 ---
 
