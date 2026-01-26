@@ -1,6 +1,6 @@
 ---
 title: "The Bus Stop Uncertainty Trap: ACstop"
-date: "2024-05-15"
+date: "2025-10-22"
 excerpt: "Trading prediction anxiety for stable information at the bus stop"
 ---
 
