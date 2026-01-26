@@ -1,6 +1,6 @@
 ---
 title: "Breaking the Doom Loop: BARTcom-TRMNL"
-date: "2024-04-01"
+date: "2025-10-06"
 excerpt: "Escaping compulsive phone checking with intentional transit information"
 ---
 
