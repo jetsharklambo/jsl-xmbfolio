@@ -1,6 +1,6 @@
 ---
 title: "Porting the Platform: Custom TRMNL Firmware"
-date: "2024-07-30"
+date: "2025-12-12"
 excerpt: "Building one bridge to unlock an entire ecosystem on open hardware"
 ---
 
