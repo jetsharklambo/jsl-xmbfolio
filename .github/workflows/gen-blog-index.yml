@@ -1,0 +1,50 @@
+name: Generate Blog Posts Index
+
+on:
+  # Run daily at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Run on push to blog directory for instant updates
+  push:
+    paths:
+      - 'blog/**'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./scripts
+        run: npm install
+
+      - name: Generate blog posts JSON
+        run: node scripts/generate-blog-index.js
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code blog-posts.json || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add blog-posts.json
+          git commit -m "chore: update blog posts index [skip ci]"
+          git push
