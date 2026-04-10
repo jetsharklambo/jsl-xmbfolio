@@ -2,7 +2,7 @@
 
 > 🎮 This is JSL's personal implementation of [XMBFolio](https://github.com/jetsharklambo/xmbfolio). For the customizable template that you can fork and make your own, please visit the main XMBFolio repository.
 
-A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaBar (XMB) interface. Built with modern web technologies including WebGL shaders, responsive design, smooth animations, and an integrated blog system.
+A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaBar (XMB) interface. Built with modern web technologies including WebGL shaders, responsive design, and an integrated blog system.
 
 ## ✨ Features
 
@@ -12,8 +12,6 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 - **📱 Cross-Platform Responsive** - Optimized for desktop, mobile, and tablet with touch support
 - **⌨️ Multiple Input Methods** - Keyboard arrows, touch gestures, and mouse navigation
 - **🎨 Modern PS3 Aesthetic** - Black background with green accent theming
-- **✨ Interactive Animations** - Physics-based animations with Motion library for engaging UX
-- **👁️ Smart Focus System** - @ menu active by default with subtle pulse animations on inactive items
 
 ## 🚀 Quick Start
 
@@ -47,18 +45,24 @@ A stunning portfolio website inspired by Sony PlayStation 3's iconic XrossMediaB
 ## 📁 Project Structure
 
 ```
-v3/
+.
 ├── index.html                    # Main entry point
-├── main.js                       # Core navigation logic 
-├── menu-animations.js            # Motion-powered animation system
-├── blog-system.js                # GitHub API blog integration
+├── main.js                       # Core navigation logic
+├── blog-system.js                # Blog integration (fetches from GitHub)
+├── blog-posts.json               # Pre-generated blog index (auto-updated daily)
 ├── mesh-gradient.js              # WebGL shader backgrounds
 ├── menu-config.js                # Comprehensive menu positioning config
 ├── menu-position-manager.js      # Cross-platform positioning system
+├── menu-focus-manager.js         # Smart submenu positioning for mobile
 ├── menu-control-panel.js         # Debug controls and user interface
 ├── menu-debug.js                 # Debug overlay and visualization
 ├── style.css                     # Responsive styling
-└── blog/                         # Markdown blog posts (loaded via GitHub API)
+├── .github/workflows/
+│   └── generate-blog-index.yml   # Auto-generates blog-posts.json daily
+├── scripts/
+│   ├── generate-blog-index.js    # Blog index generator script
+│   └── package.json              # Script dependencies
+└── blog/                         # Markdown blog posts
     ├── 2024-01-15-welcome.md
     ├── 2024-02-10-development-update.md
     └── 2024-03-05-design-philosophy.md
@@ -79,14 +83,15 @@ v3/
 
 ## 📝 Blog System
 
-The integrated blog system uses the **GitHub API** to automatically discover and load Markdown files from the repository's `blog/` folder. Blog posts appear dynamically in the Log menu section.
+The integrated blog system uses a **GitHub Actions workflow** to automatically generate a static JSON index of blog posts. This approach eliminates rate limiting issues and provides faster page loads.
 
 ### How It Works
 
-1. **Automatic Discovery**: The system fetches all `.md` files from the GitHub repository
-2. **GitHub API Integration**: Uses `https://api.github.com/repos/jetsharklambo/xmbfolio/contents/blog`
-3. **Dynamic Loading**: Blog posts are loaded and parsed automatically on page load
-4. **GitHub Links**: Clicking a blog post opens the GitHub page with an anchor to the first heading
+1. **GitHub Action**: Runs daily (and on blog changes) to scan all `.md` files in `blog/` folder
+2. **JSON Generation**: Creates `blog-posts.json` with parsed frontmatter and content
+3. **Static Fetching**: Client fetches pre-generated JSON (no API rate limits!)
+4. **Auto-Updates**: New blog posts appear automatically within 24 hours (or immediately on push)
+5. **GitHub Links**: Clicking a blog post opens the GitHub page with an anchor to the first heading
 
 ### Creating Blog Posts
 
@@ -105,24 +110,40 @@ excerpt: "Brief description of your post"
 Write your blog content in Markdown format...
 ```
 
-3. **Commit to GitHub** - The post will automatically appear in the menu (no code changes needed!)
+3. **Commit to GitHub** - The GitHub Action will automatically:
+   - Detect the new/modified blog post
+   - Regenerate `blog-posts.json`
+   - Commit the updated JSON file
+   - Your site will show the new post on next page load!
 
 ### Blog Features
 
-- **GitHub API Integration**: Automatic discovery of new blog posts
+- **GitHub Actions Automation**: Automatic JSON generation on schedule or blog changes
+- **No Rate Limiting**: Fetches static JSON file instead of GitHub API
+- **Faster Loading**: Single request instead of N+1 API calls
 - **Smart Link Generation**: Links to GitHub with anchors to first headings
-- **Frontmatter Parsing**: Automatic title, date, and excerpt extraction  
-- **Zero Configuration**: No manual file registration required
+- **Frontmatter Parsing**: Automatic title, date, and excerpt extraction
+- **Zero Maintenance**: Fully automated workflow
 - **GitHub Rendering**: Posts display with GitHub's native Markdown renderer
 
-### GitHub Configuration
+### Workflow Configuration
 
-The blog system is configured to work with this repository by default. To use with your own repository:
+The GitHub Action (`.github/workflows/generate-blog-index.yml`) runs:
+- **Daily** at midnight UTC
+- **On push** to `blog/` folder (instant updates)
+- **Manually** via workflow dispatch
+
+To customize for your repository:
 
 ```javascript
-// In blog-system.js, update these values:
-this.githubRepo = 'yourusername/yourrepository';
-this.githubPath = 'blog'; // or your preferred folder name
+// In blog-system.js, update the GitHub raw URL:
+this.blogIndexUrl = 'https://raw.githubusercontent.com/yourusername/yourrepo/main/blog-posts.json';
+```
+
+```javascript
+// In scripts/generate-blog-index.js, update repo info:
+const GITHUB_REPO = 'yourusername/yourrepository';
+const GITHUB_BRANCH = 'main';
 ```
 
 ## 🎨 Customization
@@ -188,41 +209,38 @@ let horizontalOffset = isMobileDevice ? 0 : 0;
 ### Core Technologies
 - **Vanilla JavaScript** - No external dependencies
 - **WebGL/WebGL2** - Hardware-accelerated background rendering
-- **GitHub API** - Dynamic blog post loading
+- **GitHub Actions** - Automated blog post indexing
+- **Static JSON Fetching** - No API rate limits
 - **CSS3 Transforms** - Smooth menu animations
-- **Motion Library** - High-performance animation library for smooth interactions
 - **Frontmatter Parsing** - Custom YAML-like parser
 - **Responsive CSS** - Mobile-first design approach
 
 ### Performance Features
 - **Hardware Acceleration** - WebGL rendering for smooth animations
-- **Comprehensive Positioning System** - Platform-specific configurations with debug controls
-- **Efficient API Usage** - Cached GitHub requests with smart loading
-- **Mobile Optimization** - Touch-optimized interface with floating debug controls
+- **Smart Mobile Positioning** - MenuFocusManager keeps active items centered
+- **Z-Index Elevation** - Active menu items render above adjacent menus
+- **Optimized Blog Loading** - Single JSON request vs N+1 API calls
+- **No Rate Limiting** - Static file fetching from GitHub raw content
+- **Mobile Optimization** - Touch-optimized interface with proper text wrapping
 - **Cross-Browser Compatibility** - Browser-specific positioning adjustments
 
 ### Advanced Features
+- **Automated Blog Pipeline** - GitHub Actions generates blog index on schedule/push
 - **Debug Control Panel** - Real-time menu positioning with visual feedback
 - **Environment Detection** - Automatic device, browser, and viewport detection
 - **User Preferences** - LocalStorage persistence for custom positioning
 - **Touch Gesture Support** - Native touch events with conflict resolution
+- **Smart Submenu Positioning** - Dynamic boundary calculations for mobile centering
 - **GitHub Link Anchors** - Smart heading detection for direct navigation
 
 ## 📋 Development Notes
 
-- **Positioning System**: Comprehensive cross-platform menu positioning with debug controls
-- **GitHub Integration**: Blog system fetches posts dynamically via GitHub API
+- **Positioning System**: MenuFocusManager with smart boundary calculations for mobile
+- **Blog Automation**: GitHub Actions workflow generates static JSON index (no rate limits)
 - **WebGL Backgrounds**: Dual-layer mesh gradient rendering for visual depth
-- **Mobile Optimization**: Touch-first design with floating debug controls
+- **Mobile Centering**: Active items positioned at 25% from left with submenu visibility priority
+- **Click Handling**: Z-index elevation and pointer-events ensure correct submenu interactions
 - **Browser Detection**: Automatic environment detection with platform-specific configurations
-
-## 🆕 Latest Updates
-
-- **Contact-First Experience**: @ menu now active by default for immediate contact visibility
-- **Engagement Animations**: Inactive menu items pulse subtly to encourage exploration
-- **Hover Effects**: Interactive scaling and rotation animations on menu hover
-- **Physics-Based Motion**: Spring animations for natural, responsive interactions
-- **Smart Animation System**: Automatic updates when navigating between menu sections
 
 ## 🎯 Version History
 
@@ -236,7 +254,6 @@ This project builds upon the excellent work of:
 
 - **Menu System**: Inspired by and adapted from [ps3-xmb-menu](https://github.com/mustafaHTP/ps3-xmb-menu) by [mustafaHTP](https://github.com/mustafaHTP)
 - **WebGL Background**: Based on mesh gradient shaders from [Paper Design Shaders](https://github.com/paper-design/shaders)
-- **Animation Library**: [Motion](https://github.com/motiondivision/motion) - Modern animation library for JavaScript
 
 ## 📄 License
 

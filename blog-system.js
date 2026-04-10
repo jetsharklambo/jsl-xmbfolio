@@ -7,11 +7,10 @@ class BlogSystem {
     constructor() {
         this.posts = [];
         this.currentPost = null;
-        
-        // GitHub configuration for loading blog posts
-        this.githubRepo = 'jetsharklambo/jsl-xmbfolio';
-        this.githubPath = 'blog';
-        this.githubApiUrl = `https://api.github.com/repos/${this.githubRepo}/contents/${this.githubPath}`;
+
+        // URL to pre-generated blog posts JSON (hosted on GitHub)
+        // Uses raw.githubusercontent.com - NOT the API, no rate limiting
+        this.blogIndexUrl = 'https://raw.githubusercontent.com/jetsharklambo/jsl-xmbfolio/main/blog-posts.json';
     }
 
     async initialize() {
@@ -28,120 +27,68 @@ class BlogSystem {
     }
 
     async loadAllPosts() {
-        console.log('Loading blog posts from GitHub...');
-        
+        console.log('=== BlogSystem: Starting loadAllPosts ===');
+        console.log('Fetching blog index from:', this.blogIndexUrl);
+
         try {
-            // Fetch list of files from GitHub API
-            const response = await fetch(this.githubApiUrl);
+            // Fetch pre-generated blog posts JSON
+            const response = await fetch(this.blogIndexUrl);
+
             if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+                throw new Error(`Failed to fetch blog index: ${response.status} ${response.statusText}`);
             }
-            
-            const files = await response.json();
-            console.log(`Found ${files.length} files in GitHub repo`);
-            
-            // Filter for markdown files
-            const markdownFiles = files.filter(file => 
-                file.type === 'file' && 
-                (file.name.endsWith('.md') || file.name.endsWith('.markdown'))
-            );
-            
-            console.log(`Found ${markdownFiles.length} markdown files`);
-            
-            // Load each markdown file
-            const promises = markdownFiles.map(file => this.loadPost(file));
-            const results = await Promise.allSettled(promises);
-            
-            this.posts = results
-                .filter(result => result.status === 'fulfilled' && result.value !== null)
-                .map(result => result.value)
-                .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, newest first
-            
-            console.log(`Successfully loaded ${this.posts.length} blog posts from GitHub`);
-            
+
+            const data = await response.json();
+            console.log(`Blog index generated at: ${data.generated}`);
+            console.log(`Found ${data.count} blog posts`);
+
+            // Posts are already parsed and sorted in the JSON
+            this.posts = data.posts;
+
+            console.log(`=== BlogSystem: Successfully loaded ${this.posts.length} posts ===`);
+            console.log('Post titles:', this.posts.map(p => p.title));
+
         } catch (error) {
-            console.error('Failed to load posts from GitHub:', error);
+            console.error('=== BlogSystem: loadAllPosts FAILED ===');
+            console.error('Error:', error.message);
             this.posts = [];
         }
     }
 
-    async loadPost(fileData) {
-        try {
-            console.log(`Loading blog post: ${fileData.name}`);
-            
-            // Fetch the raw file content from GitHub
-            const response = await fetch(fileData.download_url);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${fileData.name}: ${response.status} ${response.statusText}`);
-            }
-            
-            const content = await response.text();
-            const { frontmatter, body } = this.parseFrontmatter(content);
-            
-            console.log(`Successfully loaded: ${fileData.name}`);
-            return {
-                filename: fileData.name,
-                title: frontmatter.title || 'Untitled Post',
-                date: frontmatter.date || '2024-01-01',
-                excerpt: frontmatter.excerpt || '',
-                content: body,
-                githubUrl: fileData.html_url // Store GitHub URL for reference
-            };
-        } catch (error) {
-            console.error(`Failed to load ${fileData.name}:`, error.message);
-            return null;
-        }
-    }
-
-    parseFrontmatter(content) {
-        const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-        const match = content.match(frontmatterRegex);
-        
-        if (!match) {
-            return { frontmatter: {}, body: content };
-        }
-
-        const frontmatterText = match[1];
-        const body = match[2];
-        const frontmatter = {};
-
-        // Parse YAML-like frontmatter
-        frontmatterText.split('\n').forEach(line => {
-            const colonIndex = line.indexOf(':');
-            if (colonIndex > 0) {
-                const key = line.substring(0, colonIndex).trim();
-                const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
-                frontmatter[key] = value;
-            }
-        });
-
-        return { frontmatter, body };
-    }
 
     replaceBlogSubMenu() {
+        console.log('=== BlogSystem: replaceBlogSubMenu called ===');
+        console.log('Posts available:', this.posts.length);
+
         const logMenuItem = this.findLogMenuItem();
         if (!logMenuItem) {
-            console.error('Log menu item not found');
+            console.error('ERROR: Log menu item not found!');
+            console.log('Available menu items:', document.querySelectorAll('.menu-item').length);
             return;
         }
+        console.log('✓ Found Log menu item');
 
         const subMenuContainer = logMenuItem.querySelector('.sub-menu-item-container');
         if (!subMenuContainer) {
-            console.error('Sub-menu container not found in Log menu item');
+            console.error('ERROR: Sub-menu container not found in Log menu item!');
             return;
         }
+        console.log('✓ Found sub-menu container');
 
         // Clear existing sub-menu items
+        const existingCount = subMenuContainer.children.length;
+        console.log(`Clearing ${existingCount} existing sub-menu items...`);
         subMenuContainer.innerHTML = '';
 
         // Add blog posts as sub-menu items
+        console.log(`Adding ${this.posts.length} blog posts to sub-menu...`);
         this.posts.forEach((post, index) => {
             const subMenuItem = this.createBlogSubMenuItem(post, index);
             subMenuContainer.appendChild(subMenuItem);
+            console.log(`  ✓ Added post ${index}: ${post.title}`);
         });
 
-        console.log(`Replaced Log sub-menu with ${this.posts.length} blog posts`);
+        console.log(`=== BlogSystem: Successfully replaced Log sub-menu with ${this.posts.length} blog posts ===`);
     }
 
     findLogMenuItem() {
@@ -224,14 +171,13 @@ class BlogSystem {
         }
 
         const post = this.posts[index];
-        console.log(`Opening blog post: ${post.title} at ${post.githubUrl}`);
-        
-        // Extract first heading from markdown content and generate anchor
-        const firstHeadingAnchor = this.extractFirstHeadingAnchor(post.content);
-        const urlWithAnchor = firstHeadingAnchor ? `${post.githubUrl}${firstHeadingAnchor}` : post.githubUrl;
-        
+        console.log(`Opening blog post: ${post.title} at ${post.githubUrlWithAnchor || post.githubUrl}`);
+
+        // Use pre-generated URL with anchor
+        const url = post.githubUrlWithAnchor || post.githubUrl;
+
         // Open the GitHub markdown file in a new tab with anchor to first heading
-        window.open(urlWithAnchor, '_blank');
+        window.open(url, '_blank');
     }
 
     openBlogPost(index) {
@@ -326,28 +272,6 @@ class BlogSystem {
             .replace(/<p><\/p>/g, '')
             .replace(/<p>(<h[1-6]>)/g, '$1')
             .replace(/(<\/h[1-6]>)<\/p>/g, '$1');
-    }
-
-    extractFirstHeadingAnchor(markdownContent) {
-        // Find the first heading (# or ## or ###) in the markdown content
-        const headingRegex = /^#+\s+(.+)$/m;
-        const match = markdownContent.match(headingRegex);
-        
-        if (!match) {
-            return null;
-        }
-        
-        const headingText = match[1];
-        
-        // Generate GitHub-style anchor slug
-        // Convert to lowercase, replace spaces with hyphens, preserve multiple hyphens
-        const anchor = headingText
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
-        
-        return `#${anchor}`;
     }
 
     setupFallbackMenu() {

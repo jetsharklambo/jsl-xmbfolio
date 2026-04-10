@@ -47,6 +47,7 @@ body {
     padding: 0 20px;
     position: relative;
     z-index: 100;
+    overflow: hidden; /* Cleanly clip menu items at viewport edges */
 }
 
 /* Menu Container */
@@ -108,6 +109,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 10; /* Render above menu item headers */
+    pointer-events: auto; /* Ensure submenu items are clickable */
 }
 
 /* Sub Menu Item */
@@ -120,6 +123,8 @@ body {
     height: 120px;
     margin: 5px;
     transition: transform 150ms ease-in;
+    z-index: 11; /* Ensure items render above container */
+    pointer-events: auto; /* Ensure individual items are clickable */
 }
 
 /* Sub Menu Item Icon */
@@ -153,47 +158,84 @@ body {
     margin-bottom: 4px;
 }
 
-/* Regular (non-blog) sub-menu items - centered text with more spacing */
-.sub-menu-item:not([data-blog-index]) {
+/* Regular (non-blog, non-project) sub-menu items - centered text with more spacing */
+.sub-menu-item:not([data-blog-index]):not([data-project-name]) {
     align-items: center;
 }
 
-.sub-menu-item:not([data-blog-index]) .sub-menu-item-header {
+.sub-menu-item:not([data-blog-index]):not([data-project-name]) .sub-menu-item-header {
     margin-left: 50px;
     text-align: center;
 }
 
-.sub-menu-item:not([data-blog-index]) .sub-menu-item-content {
+.sub-menu-item:not([data-blog-index]):not([data-project-name]) .sub-menu-item-content {
     align-items: center;
     text-align: center;
     margin-left: 50px;
+}
+
+/* Project items - left-aligned text */
+.sub-menu-item[data-project-name] .sub-menu-item-content {
+    align-items: flex-start;
+    text-align: left;
 }
 
 /* Sub Menu Item Date */
 .sub-menu-item-date {
     color: #4a7c59;
-    opacity: 0.5;
+    opacity: 0;
     font-size: 12px;
     transition: opacity 0.3s ease;
     margin-bottom: 4px;
+    display: none;
+}
+
+/* Sub Menu Item Meta (for project info) */
+.sub-menu-item-meta {
+    color: #4a7c59;
+    opacity: 0;
+    font-size: 12px;
+    transition: opacity 0.3s ease;
+    margin-bottom: 4px;
+    display: none;
 }
 
 /* Sub Menu Item Excerpt */
 .sub-menu-item-excerpt {
     color: #ffffff;
-    opacity: 0.3;
+    opacity: 0;
     font-size: 12px;
     line-height: 1.4;
     transition: opacity 0.3s ease;
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
+    display: none;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Sub Menu Item Description (for project info) */
+.sub-menu-item-description {
+    color: #ffffff;
+    opacity: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    transition: opacity 0.3s ease;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: none;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 
 /* Active Menu Item */
+.active-menu-item {
+    pointer-events: none; /* Prevent entire active menu from capturing clicks */
+    z-index: 100; /* Render above all other menu items so submenu is always on top */
+}
+
 .active-menu-item .menu-item-icon {
     opacity: 1;
     transform: scale(1.2);
@@ -203,8 +245,14 @@ body {
     display: block;
 }
 
+/* Prevent menu-item header from capturing clicks when submenu is visible */
+.active-menu-item .menu-item-header {
+    pointer-events: none;
+}
+
 .active-menu-item .sub-menu-item-container {
     display: flex;
+    pointer-events: auto; /* Re-enable for submenu */
 }
 
 /* Active Sub Menu Item */
@@ -219,10 +267,22 @@ body {
 
 .active-sub-menu-item .sub-menu-item-date {
     opacity: 0.8;
+    display: block;
+}
+
+.active-sub-menu-item .sub-menu-item-meta {
+    opacity: 0.8;
+    display: block;
 }
 
 .active-sub-menu-item .sub-menu-item-excerpt {
     opacity: 0.6;
+    display: -webkit-box;
+}
+
+.active-sub-menu-item .sub-menu-item-description {
+    opacity: 0.6;
+    display: -webkit-box;
 }
 
 /* Blog Modal Styles */
@@ -454,6 +514,9 @@ body {
 
     .sub-menu-item-header {
         font-size: 14px;
+        max-width: 240px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .sub-menu-item:not([data-blog-index]) .sub-menu-item-header {
@@ -469,6 +532,16 @@ body {
     }
 
     .sub-menu-item-excerpt {
+        font-size: 11px;
+        max-width: 240px;
+        -webkit-line-clamp: 2;
+    }
+
+    .sub-menu-item-meta {
+        font-size: 11px;
+    }
+
+    .sub-menu-item-description {
         font-size: 11px;
         max-width: 200px;
         -webkit-line-clamp: 1;
