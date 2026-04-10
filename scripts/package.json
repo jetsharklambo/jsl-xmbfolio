@@ -1,0 +1,14 @@
+{
+  "name": "xmbfolio-blog-generator",
+  "version": "1.0.0",
+  "description": "Generate static JSON index for blog posts",
+  "main": "generate-blog-index.js",
+  "scripts": {
+    "generate": "node generate-blog-index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
