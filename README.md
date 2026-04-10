@@ -254,6 +254,7 @@ This project builds upon the excellent work of:
 
 - **Menu System**: Inspired by and adapted from [ps3-xmb-menu](https://github.com/mustafaHTP/ps3-xmb-menu) by [mustafaHTP](https://github.com/mustafaHTP)
 - **WebGL Background**: Based on mesh gradient shaders from [Paper Design Shaders](https://github.com/paper-design/shaders)
+- Train by Jamison Wieser from <a href="https://thenounproject.com/browse/icons/term/train/" target="_blank" title="Train Icons">Noun Project</a> (CC BY 3.0)
 
 ## 📄 License
 
